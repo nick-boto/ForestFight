@@ -1,5 +1,6 @@
 import random
 
+#Note to self: Streamline the following interface to show gold and item purchase success
 def shop(player):
   print('You can buy the following things at the shop:')
   itemsList = ['Rations', 'Dart']
@@ -33,7 +34,7 @@ def shop(player):
   if player.inventory['spellbook']:
     print(' - Mana Scroll. This scroll will give you more mana when read. Cost: 100 gold.')
     itemsListCosts += [100]
-  action = input('Enter the name of the item you would like to buy:')
+  action = input('Enter the name of the item you would like to buy. >>> ')
 
   for x in itemsList:
     if x == action:
@@ -64,7 +65,7 @@ def shop(player):
 
 def work(player, action):
   while action != 's':
-    print('You are working. Enter the sequence of characters below to gain 1 gold, or enter \'s\' to stop working.')
+    print('You are working. Enter the sequence of characters below to get paid 5 gold, or enter \'s\' to stop working.')
     lettersAvailable = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',   'v', 'w', 'x', 'y', 'z']
     numbersAvailable = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
     symbolsAvailable = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '`', '~', '-', '_', '=', '+', '[', ']', '{', '}', '\\', '|', ';', ':', '\'', '"', ',', '<', '.', '>', '/', '?']
@@ -82,12 +83,45 @@ def work(player, action):
         sequence += random.choice(symbolsAvailable)
     
     print(sequence)
-    action = input('>>>')
+    action = input('>>> ')
+    print()
 
     while action != 's' and action != sequence:
       print('Try again.')
-      action = input('>>>')
+      action = input('>>> ')
+      print()
     
     if action == sequence:
-      print('Gold +1')
-      player.inventory['gold'] += 1
+      print('You have completed a task, and the Outpost manager pays you 5 gold!')
+      player.inventory['gold'] += 5
+      player.save()
+      print()
+  
+def terminal(player):
+  action = ''
+  print('WELCOME TO THE OUTPOST COMPUTER TERMINAL')
+  print(f'Logging in as {player.name}.')
+  print(f'Logging in as {player.name}..')
+  print(f'Logging in as {player.name}...')
+  print('Done! Logged in. What would you like to do on the Terminal?')
+  while action != 'log off':
+    print('Options: research, scan, log off')
+    action = input('>>> ')
+    print()
+    if action == 'research':
+      print('Sorry, this feature isn\'t fully implemented yet. Check back later!')
+    elif action == 'scan':
+      print('Printing your stats now...')
+      print(f'{player.name}\'s stats:'.upper())
+      print(f'{player.atk} damage per hit')
+      print(f'{player.prot * 100}% damage reduction')
+      print(f'{player.hp}/{player.maxHp} health')
+      print(f'{player.mana} mana points')
+      print(f'{player.critReq} mana points needed for a critical hit')
+      print(f'{player.level} levels, {player.exp}/{player.nextLevel} experience points needed to level up')
+      print(f'{player.inventory["gold"]} gold')
+      print(f'{player.inventory["sword"]} equipped as a weapon, {player.inventory["armor"]} equipped as armor')
+      print(f'{player.inventoryConsumables["healing"]} packs of rations')
+      print(f'{player.inventoryConsumables["attack"]} darts')
+      if player.inventory['spellbook']:
+        print(f'You have the Spellbook, as well as {player.inventoryConsumables["mana"]} mana scrolls.')
