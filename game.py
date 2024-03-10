@@ -17,28 +17,24 @@ class Entity:
   def save(self):
     with open(f'{self.type}.txt', 'w') as f:
       f.write(str(self.name))
-      f.write('\n')
-      f.write('\n')
+      f.write('\n\n')
       f.write("Attack and Protection Stats:\n")
       f.write(str(self.atk))
       f.write('\n')
       f.write(str(self.prot))
-      f.write('\n')
-      f.write('\n')
+      f.write('\n\n')
       f.write("Health Points and Health Point Maximum:\n")
       f.write(str(self.hp))
       f.write('\n')
       f.write(str(self.maxHp))
-      f.write('\n')
-      f.write('\n')
+      f.write('\n\n')
       f.write('Mana Points:\n')
       f.write(str(self.mana))
-      f.write('\n')
-      f.write('\n')
+      f.write('\n\n')
       f.write('Critical Hit Information:\n')
-      f.write(str(self.hasCrit))
-      f.write('\n')
       f.write(str(self.critReq))
+      f.write('\n')
+      f.write(str(self.hasCrit))
 
   def update(self, name, atk, prot, hp, maxHp, mana, critReq, hasCrit):
     self.name = str(name)
@@ -47,8 +43,8 @@ class Entity:
     self.hp = float(hp)
     self.maxHp = float(maxHp)
     self.mana = float(mana)
-    self.critReq = bool(critReq)
-    self.hasCrit = float(hasCrit)
+    self.critReq = float(critReq)
+    self.hasCrit = bool(hasCrit)
       
   def attackOther(self, other):
     if self.mana >= self.critReq and self.hasCrit == True:
@@ -116,7 +112,7 @@ class Player(Entity):
   def __init__(self, name):
     super().__init__(name, 2, 0.05, 25, 25, 0, 5, True)
     self.exp = 0.0
-    self.level = 1.0
+    self.level = 1
     self.nextLevel = 100.0
     self.inventory = {
       'gold': 0,
@@ -133,14 +129,14 @@ class Player(Entity):
 
   def save(self):
     super().save()
-    with open(f'{self.type}.txt', 'w') as f:
+    with open(f'{self.type}.txt', 'a') as f:
       f.write('\n')
       f.write('\n')
       f.write('Level and Experience Points:\n')
       f.write(str(self.exp))
       f.write('\n')
       f.write(str(self.level))
-      f.write('\n')
+      f.write('\n\n')
       f.write('Inventory:\n')
       f.write(str(self.inventory['sword']))
       f.write('\n')
@@ -152,13 +148,15 @@ class Player(Entity):
       if self.inventory['spellbook']:
         f.write('\nSpellbook')
   
-  def update(self, name, atk, prot, hp, maxHp, mana, critReq, hasCrit, exp, level):
+  def update(self, name, atk, prot, hp, maxHp, mana, critReq, hasCrit, exp, level, inventory, inventoryConsumables):
     super().update(name, atk, prot, hp, maxHp, mana, critReq, hasCrit)
     self.exp = float(exp)
     self.level = int(level)
     self.nextLevel = 100
     for i in range(int(self.level)):
       self.nextLevel *= 1.25
+    self.inventory = inventory
+    self.inventoryConsumables = inventoryConsumables
 
   def heal(self):
     if self.mana >= 2:

@@ -1,30 +1,42 @@
 from game import *
 import time, outpost
 
-print('___       ___     __             __   ___  __           __   ___     __   __   __        ')
-print(' |  |__| |__     |  \\ |  | |\\ | / _` |__  /  \\ |\\ |    /  \\ |__     |  \\ /  \\ /  \\  |\\/| ')
-print(' |  |  | |___    |__/ \\__/ | \\| \\__> |___ \\__/ | \\|    \\__/ |       |__/ \\__/ \\__/  |  | ')
+print(' ___  __   __   ___  __  ___     ___    __       ___ ')
+print('|__  /  \ |__) |__  /__`  |     |__  | / _` |__|  |  ')
+print('|    \__/ |  \ |___ .__/  |     |    | \__> |  |  |  ')
 
 try:
   with open('Player.txt', 'r') as f:
     textLine = f.readlines()
     playerName = textLine[0].rstrip()
     player = Player('player')
-    player.update(playerName, textLine[3], textLine[4], textLine[7], textLine[8], textLine[11], textLine[14], textLine[15], textLine[18], textLine[19])
+    inventory = {
+      'gold': int(textLine[24].strip('Gold: ').rstrip()),
+      'sword': textLine[22].rstrip(),
+      'armor': textLine[23].rstrip(),
+      'spellbook': False,
+    }
+    inventoryConsumables = {
+      'healing': int(textLine[25].strip('Rations: ').rstrip()),
+      'attack': int(textLine[27].strip('Darts: ')),
+      'mana': int(textLine[26].strip('Mana Scrolls: ').rstrip()),
+    }
+    player.update(playerName, textLine[3].rstrip(), textLine[4].rstrip(), textLine[7].rstrip(), textLine[8].rstrip(), textLine[11].rstrip(), textLine[14].rstrip(), textLine[15].rstrip(), textLine[18].rstrip(), textLine[19].rstrip(), inventory, inventoryConsumables)
     print(f'Welcome back, {playerName}!')
-    print('You quickly fight your way through the forest with your superior skills and get to the Outpost!')
+    print('You wake up from your nap in the Outpost, feeling fully energized!')
+    playerLocation = 'outpost'
   
-except FileNotFoundError:
-  player = Player(input('Welcome, brave explorer! Enter your name: '))
+except:
+  player = Player(input('Welcome, brave explorer! Enter your name. >>> '))
   print(f'{player.name}, welcome to the Forest!')
   print('There is a great treasure hidden somewhere within the Forest, but you must find it before the Outpost is destroyed!')
   print('You must now fight your way through the forest to start mapping it. Return to the Outpost if you need to rest!')
   print('You enter the Forest, ready to start your journey.')
   player.save()
+  playerLocation = 'forest'
 
-print()
+print('\n\n')
 action = ''
-playerLocation = 'forest'
 
 while True:
   while playerLocation == 'forest':
@@ -35,16 +47,17 @@ while True:
       player.mana += 1
       player.hp = float(int(player.hp))
       print(f'You have {player.hp} health left and {player.mana} mana ready.')
-      action = input('Enter \'a\' to attack, \'u\' to use an item, or \'r\' to run away. >>>')
+      action = input('Enter \'a\' to attack, \'u\' to use an item, or \'r\' to run away. >>> ')
+      print()
       
       if action == 'a':
         print(f'You hit the {enemy.name}, dealing {player.attackOther(enemy)} damage!')
         if enemy.hp <= 0:
           break
       
-      elif action == 'h' and player.inventory['spellbook']:
-        action = input(f'Your items list consists of {player.inventoryConsumables["healing"]} rations (\'r\'), {player.inventoryConsumables["mana"]} mana scrolls (\'m\'), and {player.inventoryConsumables["attack"]} darts (\'d\'). Which would you like to use?')
-        action = input(f'Your items list consists of {player.inventoryConsumables["healing"]} rations (\'r\') and {player.inventoryConsumables["attack"]} darts (\'d\'). Which would you like to use?')
+      elif action == 'u' and player.inventory['spellbook']:
+        action = input(f'Your items list consists of {player.inventoryConsumables["healing"]} rations (\'r\'), {player.inventoryConsumables["mana"]} mana scrolls (\'m\'), and {player.inventoryConsumables["attack"]} darts (\'d\'). Which would you like to use? >>> ')
+        print()
         if action == 'r' and player.inventoryConsumables['healing'] > 0:
           print('You eat 1 pack of rations and regain 5 health.')
           player.hp += 5
@@ -61,10 +74,13 @@ while True:
           print('You don\'t have that item!')
         else:
           print('You get confused and decide not to use an item.')
+        player.mana -= 1
+        print()
         continue
       
-      elif action == 'h':
+      elif action == 'u':
         action = input(f'Your items list consists of {player.inventoryConsumables["healing"]} rations (\'r\') and {player.inventoryConsumables["attack"]} darts (\'d\'). Which would you like to use?')
+        print()
         if action == 'r' and player.inventoryConsumables['healing'] > 0:
           print('You eat 1 pack of rations and regain 5 health.')
           player.hp += 5
@@ -77,34 +93,40 @@ while True:
           print('You don\'t have that item!')
         else:
           print('You get confused and decide not to use an item.')
+        player.mana -= 1
+        print()
         continue
       
-      elif action == 'q':
+      elif action == 'r':
         break
+      
       else:
         print('You get confused and decide not to do anything.')
         print(f'Fortunately, your confusion seems to effect the {enemy.name}, and they do nothing on their turn.')
+        player.mana -= 1
+        print()
         continue
       
       player.save()
+      print()
       
       if enemy.hasCrit and enemy.mana < enemy.critReq:
         print(f'The {enemy.name} charges up a critical hit!')
         enemy.mana += 1
       print(f'The {enemy.name} hits you, dealing {enemy.attackOther(player)} damage!')
 
-      enemy.save()
+      print()
   
     if enemy.hp <= 0:
       rewards = enemy.die()
       player.exp += rewards['exp']
       player.inventory['gold'] += rewards['gold']
       player.levelUp()
-      print()
+      print('\n\n')
       
       if enemy.name == "Dragon":
         print('You have reached the heart of the Forest, where you see a huge diamond, the fabled treasure of the Forest! You have won the game!')
-        print('Thanks for playing! CC made by Nick')
+        print('Thanks for playing! ForestFight made by Nick')
         break
   
       player.save()
@@ -117,21 +139,36 @@ while True:
       print('..')
       time.sleep(1)
       print('...')
-      print('...you wake up back at the Outpost, unsure how you got there but happy to be alive.')
+      print('\n\n')
+      print('...you wake up back at the Outpost, unsure how you got there but happy to be alive. You seem to have lost all your gold and prepared mana, though.')
+      player.inventory['gold'] = 0
+      player.mana = 0
       playerLocation = 'outpost'
 
     elif action == 'r':
       print(f'You decide to make a run for the outpost, the {enemy.name} is not worth the trouble.')
-      print('You get there safely, and are able to recover from your wounds.')
+      print('You get there safely, and are able to recover from your wounds after about half an hour. You\'ve spent all your mana casting healing spells, though.')
+      print('\n\n')
+      player.mana = 0
       playerLocation = 'outpost'
 
   while playerLocation == 'outpost':
     player.hp = player.maxHp
     print('At the Outpost, the shop is open, and you are able to buy things or work.')
-    action = input('Enter \'s\' to shop, \'w\' to work, \'s\' to save and quit, or \'v\' to venture out into the forest. >>>')
+    action = input('Enter \'s\' to shop, \'w\' to work, \'q\' to save and quit, \'t\' to use the computer terminal, or \'v\' to venture out into the forest. >>> ')
+    print()
     if action == 's':
       outpost.shop(player)
       player.save()
     elif action == 'w':
       outpost.work(player, action)
       player.save()
+    elif action == 'v':
+      playerLocation = 'forest'
+    elif action == 'q':
+      player.save()
+      print('You decide to lie down for a nap, and fade into a dreamless sleep.')
+      quit()
+    elif action == 't':
+      outpost.terminal(player)
+    print('\n\n')

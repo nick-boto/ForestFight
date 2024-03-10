@@ -1,0 +1,28 @@
+Nick
+
+Attack and Protection Stats:
+2.0
+0.05
+
+Health Points and Health Point Maximum:
+25.0
+25.0
+
+Mana Points:
+47.0
+
+Critical Hit Information:
+5.0
+True
+
+Level and Experience Points:
+120.0
+1
+
+Inventory:
+Stone Knife
+Cotton Shirt
+Gold: 145
+Rations: 0
+Mana Scrolls: 0
+Darts: 0
