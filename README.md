@@ -18,3 +18,5 @@ This is a text-based adventure game, made to test Python classes.
 *Shop* - Using *gold*, you can buy better swords to upgrade your attack (see **Sword**), better armor to upgrade your defense (see **Armor**), and consumable items like rations and darts to use during fights (see *Use an Item*).
 
 **Spellbook** - This unlocks two spells, *Fireball* (which deals damage equal to your *Mana*, ignoring damage reduction, requiring 2 *Mana*) and Lightning Bolt (which lowers the enemy's *IDR* by 1.0%, requiring 3 *Mana*). Casting a spell uses all your *Mana*, no matter what the spell's *Mana* requirement is.
+### IMPORTANT NOTE!
+Can't find the **Spellbook** in store? That's because it's a secret! It needs to be found, not bought.
